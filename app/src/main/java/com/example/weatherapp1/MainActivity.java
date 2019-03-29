@@ -40,11 +40,9 @@ public class MainActivity extends AppCompatActivity {
     protected ListView lv = null;
     protected JSONObject json = null;
     protected Activity activity = getParent();
-    public ArrayList<MainWeatherClass> weatherList;
+    public ArrayList<DisplayClass> weatherList;
     protected ListAdapter adapter;
     protected static Gson gson = new Gson();
-    protected DisplayItem display = new DisplayItem();
-    protected ArrayList<DisplayItem> displayItems = new ArrayList<DisplayItem>();
     protected Intent mainIntent = new Intent(this, Main3Activity.class);
     protected Retrofit retrofit = null;
     public static String endpointA = "weather?q=" + city + "&units=metric&appid=" + OPEN_WEATHER_MAP_API;
@@ -93,12 +91,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mWeatherViewModel = ViewModelProviders.of(this).get(WeatherViewModel.class);
-        mWeatherViewModel.getmAllWeather().observe(this, new Observer <List<MainWeatherClass>>() {
-            @Override
-            public void onChanged(@Nullable List<MainWeatherClass> mainWeatherClasses) {
-                adapter.setmWeathers(mainWeatherClasses);
-            }
-        });
 
         cityField = (TextView) findViewById(R.id.cityField);
         updatedField = (TextView) findViewById(R.id.updateField);
@@ -118,21 +110,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        helper = new DBHelper(this);
-        weatherList = new ArrayList<MainWeatherClass>();
         adapter = new ListAdapter(this, weatherList, helper);
 
-        lv = findViewById(R.id.weatherLV);
-        lv.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-    }
+        mWeatherViewModel.getmAllWeather().observe(this, new Observer<List<DisplayClass>>() {
+            @Override
+            public void onChanged(@Nullable List<DisplayClass> displayClasses) {
+                adapter.setmWeathers(displayClasses);
+            }
+        });
 
-    private void update(MainWeatherClass param) {
-        weatherList.add(param);
-        adapter.update(weatherList);
-        adapter.notifyDataSetChanged();
-        mWeatherViewModel.insert(param);
-        adapter.notifyDataSetInvalidated();
     }
 
     @Override
@@ -144,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() throws Exception {
                 if(weatherList != null) {
-                    update(main);
                     Log.d("Done", "run: success" );
                 }
             }
@@ -164,23 +149,22 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE) {
             if(bIntentEmpty == true) {
                 Intent intent = getIntent();
             } else {
                 if(bEdit == true) {
-                    MainWeatherClass receiver = (MainWeatherClass) data.getParcelableExtra("UpdateData");
-                    main = receiver;
-                    Log.d("MainActivity",weatherList.get(0).getBase() + "\n");
+                    DisplayClass receiver = data.getParcelableExtra("UpdateData");
+                    Log.d("MainActivity",receiver.getName() + "\n");
                     if (resultCode == Activity.RESULT_OK) {
                         mWeatherViewModel.insert(receiver);
                     } else if (resultCode == Activity.RESULT_CANCELED) {
                         return;
                     }
                 } else {
-                    MainWeatherClass receiver = (MainWeatherClass) data.getParcelableExtra("AddData");
-                    main = receiver;
-                    Log.d("MainActivity",receiver.getBase()  + "\n");
+                    DisplayClass receiver = data.getParcelableExtra("AddData");
+                    Log.d("MainActivity",receiver.getName()  + "\n");
                     if (resultCode == Activity.RESULT_OK) {
                         mWeatherViewModel.insert(receiver);
                     } else if (resultCode == Activity.RESULT_CANCELED) {

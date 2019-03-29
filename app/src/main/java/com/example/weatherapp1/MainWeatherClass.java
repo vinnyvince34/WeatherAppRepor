@@ -1,43 +1,18 @@
 package com.example.weatherapp1;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Embedded;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Ignore;
-import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
-import java.util.List;
-import java.util.Observable;
-
-@Entity(tableName = "WeatherContent")
-public class MainWeatherClass extends Observable implements Parcelable {
-    @PrimaryKey(autoGenerate = true)
-    @NonNull
-    private int uid = 0;
-    @SerializedName("weather")
-    @Expose(deserialize = true)
-    @Embedded
-    private Weather weather;
-    @Embedded
+public class MainWeatherClass implements Parcelable {
+    private Weather[] weather;
     private Cloud cloud;
-    @Embedded
     private Wind wind;
-    @Embedded
     private Coord coord;
-    @Embedded
     private System sys;
-    @Embedded
     private Main main;
     private String base;
     private String visibility;
     private String dt;
-    @ColumnInfo(name = "main_id")
     private String id;
     private String name;
     private String httpCode;
@@ -45,19 +20,11 @@ public class MainWeatherClass extends Observable implements Parcelable {
     public MainWeatherClass() {
     }
 
-    public int getUid() {
-        return uid;
-    }
-
-    public void setUid(int uid) {
-        this.uid = uid;
-    }
-
-    public Weather getWeather() {
+    public Weather[] getWeather() {
         return weather;
     }
 
-    public void setWeather(Weather weather) {
+    public void setWeather(Weather[] weather) {
         this.weather = weather;
     }
 
@@ -175,8 +142,7 @@ public class MainWeatherClass extends Observable implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.uid);
-        dest.writeParcelable(this.weather, flags);
+        dest.writeParcelableArray(this.weather, flags);
         dest.writeParcelable(this.cloud, flags);
         dest.writeParcelable(this.wind, flags);
         dest.writeParcelable(this.coord, flags);
@@ -191,8 +157,7 @@ public class MainWeatherClass extends Observable implements Parcelable {
     }
 
     protected MainWeatherClass(Parcel in) {
-        this.uid = in.readInt();
-        this.weather = in.readParcelable(Weather.class.getClassLoader());
+        this.weather = (Weather[]) in.readParcelableArray(Weather.class.getClassLoader());
         this.cloud = in.readParcelable(Cloud.class.getClassLoader());
         this.wind = in.readParcelable(Wind.class.getClassLoader());
         this.coord = in.readParcelable(Coord.class.getClassLoader());

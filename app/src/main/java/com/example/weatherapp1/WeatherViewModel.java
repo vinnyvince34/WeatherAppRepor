@@ -9,7 +9,7 @@ import java.util.List;
 
 public class WeatherViewModel extends AndroidViewModel {
     private WeatherRepository mRespository;
-    private LiveData<List<MainWeatherClass>> mAllWeather;
+    private LiveData<List<DisplayClass>> mAllWeather;
 
     public WeatherViewModel(@NonNull Application application) {
         super(application);
@@ -17,9 +17,9 @@ public class WeatherViewModel extends AndroidViewModel {
         mAllWeather = mRespository.getmAllWeather();
     }
 
-    LiveData<List<MainWeatherClass>> getmAllWeather() {return mAllWeather;}
+    LiveData<List<DisplayClass>> getmAllWeather() {return mAllWeather;}
 
-    public void insert(MainWeatherClass mainWeatherClass) {mRespository.insert(mainWeatherClass);}
+    public void insert(DisplayClass displayClass) {mRespository.insert(displayClass);}
 
 
 }

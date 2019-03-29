@@ -19,12 +19,12 @@ import java.util.List;
 
 public class ListAdapter extends BaseAdapter {
     Activity activity;
-    ArrayList<MainWeatherClass> weatherList;
+    ArrayList<DisplayClass> weatherList;
     DBHelper helper;
-    private List<MainWeatherClass> mWeathers;
+    private List<DisplayClass> mWeathers;
     public static int index = 0;
 
-    public ListAdapter(Activity activity, ArrayList<MainWeatherClass> weatherList, DBHelper helper) {
+    public ListAdapter(Activity activity, ArrayList<DisplayClass> weatherList, DBHelper helper) {
         this.activity = activity;
         this.weatherList = new ArrayList<>(weatherList);
         this.helper = helper;
@@ -103,8 +103,8 @@ public class ListAdapter extends BaseAdapter {
 
             Log.d("Network", "getView: " +  weatherList.get(i).toString());
             holder.cityField.setText("City: " + weatherList.get(i).getName());
-            holder.detailsField.setText("Visibility: " + weatherList.get(i).getVisibility() + "m");
-            holder.currentTemperatureField.setText("Temperature: " + weatherList.get(i).getMain().getTemp() + "C");
+            holder.detailsField.setText("Visibility: " + weatherList.get(i).getVisibility() + " m");
+            holder.currentTemperatureField.setText("Temperature: " + weatherList.get(i).getMain().getTemp() + " C");
             holder.humidity_field.setText("Humidity: " + weatherList.get(i).getMain().getHumidity() + "g/m3");
             holder.pressure_field.setText("Pressure: " + weatherList.get(i).getMain().getPressure() + "Pa");
             holder.updatedField.setText("Wind speed:" + weatherList.get(i).getWind().getSpeed() + "m/s");
@@ -112,12 +112,12 @@ public class ListAdapter extends BaseAdapter {
         return convertView;
     }
 
-    void setmWeathers(List<MainWeatherClass> weathers) {
+    void setmWeathers(List<DisplayClass> weathers) {
         mWeathers = weathers;
         notifyDataSetChanged();
     }
 
-    public void update(List<MainWeatherClass> newData) {
+    public void update(List<DisplayClass> newData) {
         weatherList.clear();
         weatherList.addAll(newData);
     }

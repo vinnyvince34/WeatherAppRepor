@@ -1,5 +1,6 @@
 package com.example.weatherapp1;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -13,6 +14,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.util.concurrent.Callable;
 
@@ -21,6 +24,7 @@ import io.reactivex.CompletableObserver;
 import io.reactivex.CompletableSource;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
+import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -35,7 +39,6 @@ public class Main3Activity extends AppCompatActivity {
     Intent intent;
     MainWeatherClass toEdit = null;
     MainWeatherClass toAdd = null;
-    MainWeatherClass main = null;
     Completable observable = new Completable() {
         @Override
         protected void subscribeActual(CompletableObserver observer) {
@@ -45,7 +48,9 @@ public class Main3Activity extends AppCompatActivity {
     listResourcesApi service;
     Observable observableResponse;
     Observable<MainWeatherClass> response = null;
-
+    DisplayClass DisplayAdd;
+    DisplayClass DisplayEdit;
+    WeatherRepository repository = new WeatherRepository(getApplication());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,28 +110,11 @@ public class Main3Activity extends AppCompatActivity {
                     String sNewAddress = String.valueOf(cityInput.getText());
                     service.getMainWeatherClassJson(sNewAddress, "metric", "b60c7e86a1a0721e4f380436455f7f25")
                             .subscribeOn(Schedulers.newThread())
+                            .observeOn(Schedulers.io())
+                            .map(mainWeatherClass -> mappingMainWeather(mainWeatherClass))
+                            .flatMap(displayClass -> repository.insert(displayClass))
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Observer<MainWeatherClass>() {
-                                @Override
-                                public void onSubscribe(Disposable d) {
-
-                                }
-
-                                @Override
-                                public void onNext(MainWeatherClass mainWeatherClass) {
-                                    Log.e(TAG, "onNext: " + mainWeatherClass.toString());
-                                }
-
-                                @Override
-                                public void onError(Throwable e) {
-                                    Log.e(TAG, "onError: "+ e.getCause());
-                                }
-
-                                @Override
-                                public void onComplete() {
-
-                                }
-                            });
+                            .subscribe(o -> {});
                         Log.d("Network", "onClick: " + toAdd.toString());
                         Intent passIntent = new Intent(v.getContext(), MainActivity.class).putExtra("AddData", (Parcelable) toAdd);
                         setResult(RESULT_OK, passIntent);
@@ -137,6 +125,19 @@ public class Main3Activity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private DisplayClass mappingMainWeather(MainWeatherClass mainWeatherClass){
+        DisplayClass displayAdd = new DisplayClass();
+        Log.e(TAG, "onNext: " + mainWeatherClass.toString());
+        displayAdd.setWeather(mainWeatherClass.getWeather()[0]);
+        displayAdd.setVisibility(Integer.parseInt(mainWeatherClass.getVisibility()));
+        displayAdd.setMain(mainWeatherClass.getMain());
+        displayAdd.setCloud(mainWeatherClass.getCloud());
+        displayAdd.setName(mainWeatherClass.getName());
+        displayAdd.setWind(mainWeatherClass.getWind());
+        Log.e(TAG, "onNext: " + displayAdd.toString());
+        return displayAdd;
     }
 
     private Completable dbInsert() {

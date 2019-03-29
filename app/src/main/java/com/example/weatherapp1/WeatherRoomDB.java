@@ -7,7 +7,7 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.os.AsyncTask;
 
-@Database(entities = {MainWeatherClass.class}, version = 2, exportSchema = false)
+@Database(entities = {DisplayClass.class}, version = 1, exportSchema = false)
 public abstract class WeatherRoomDB extends RoomDatabase {
     public abstract WeatherDAO weatherDAO();
     public static volatile WeatherRoomDB INSTANCE;
@@ -18,7 +18,6 @@ public abstract class WeatherRoomDB extends RoomDatabase {
                 if(INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             WeatherRoomDB.class, "WeatherContent")
-                            .allowMainThreadQueries()
                             .fallbackToDestructiveMigration()
                             .addCallback(sRoomDatabaseCallback)
                             .build();
@@ -47,7 +46,6 @@ public abstract class WeatherRoomDB extends RoomDatabase {
 
         @Override
         protected Void doInBackground(final Void... params) {
-
             return null;
         }
     }

@@ -10,15 +10,15 @@ import java.util.List;
 @Dao
 public interface WeatherDAO {
     @Insert
-    void insert (MainWeatherClass... mainWeatherClass);
+    void insert (DisplayClass... displayClass);
 
     @Insert
-    void insert(MainWeatherClass mainWeatherClass);
+    void insert(DisplayClass displayClass);
 
     @Query("DELETE FROM WeatherContent")
     void deleteAll();
 
     @Query("SELECT * FROM WeatherContent")
-    LiveData<List<MainWeatherClass>> getAllMainWeather();
+    LiveData<List<DisplayClass>> getAllMainWeather();
 }
 

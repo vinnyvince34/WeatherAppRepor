@@ -1,5 +1,7 @@
 package com.example.weatherapp1;
 
+import com.google.gson.JsonObject;
+
 import io.reactivex.Observable;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -26,6 +28,12 @@ interface listResourcesApi {
 
     @GET("weather")
     Observable<MainWeatherClass> getMainWeatherClassJson(
+            @Query("q") String city,
+            @Query("units") String unit,
+            @Query("appid") String appId);
+
+    @GET("weather")
+    Observable<JsonObject> getMainWeatherClassJsonObject(
             @Query("q") String city,
             @Query("units") String unit,
             @Query("appid") String appId);

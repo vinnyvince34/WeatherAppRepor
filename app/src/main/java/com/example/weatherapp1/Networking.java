@@ -58,33 +58,6 @@ public class Networking {
         return service;
     }
 
-    public static Observable<MainWeatherClass> writeDB(Observable<MainWeatherClass> observable, SQLiteDatabase db, DBHelper helper, Cursor result, ArrayList<DisplayItem> displayItems) {
-        MainWeatherClass main;
-        db = helper.getWritableDatabase();
-        result = db.rawQuery("SELECT  * FROM Weather", null);
-        result.moveToFirst();
-
-        String tempID = "";
-        String tempCountry = "";
-        String tempWindSpeed = "";
-        String tempVisibility = "";
-        String tempTemp = "";
-        String tempHumid = "";
-        String tempPressure = "";
-        while(!result.isAfterLast() ) {
-            tempID = result.getString(result.getColumnIndex("ID"));
-            tempCountry = result.getString(result.getColumnIndex("Country"));
-            tempWindSpeed = result.getString(result.getColumnIndex("Wind_speed"));
-            tempVisibility = result.getString(result.getColumnIndex("Visibility"));
-            tempTemp = result.getString(result.getColumnIndex("Temperature"));
-            tempHumid = result.getString(result.getColumnIndex("Humidity"));
-            tempPressure = result.getString(result.getColumnIndex("Pressure"));
-            displayItems.add(new DisplayItem(tempID, tempCountry, tempWindSpeed, tempVisibility, tempTemp, tempHumid, tempPressure));
-            result.moveToNext();
-        }
-        return observable;
-    }
-
     public static MainWeatherClass ConvertJSON (JSONObject json) {
         int i = 0;
         MainWeatherClass main = null;
