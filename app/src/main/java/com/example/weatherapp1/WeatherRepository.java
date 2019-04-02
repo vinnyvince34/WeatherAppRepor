@@ -21,20 +21,21 @@ public class WeatherRepository {
     }
 
     LiveData<List<DisplayClass>> getmAllWeather() {
-        return mAllWeather;
+        return mWeatherDOA.getAllMainWeather();
     }
 
-    public Observable
-    insert (final DisplayClass displayClass) {
-        return Observable.defer(new Callable<ObservableSource<?>>() {
-            @Override
-            public ObservableSource<?> call() throws Exception {
-                mWeatherDOA.insert(displayClass);
-                return Observable.just(true);
-            }
-        });
+    public Observable<DisplayClass>
 
-//        new insertAsyncTask(mWeatherDOA).doInBackground(displayClass);
+    insert (final DisplayClass displayClass) {
+        return Observable.defer((Callable<ObservableSource<DisplayClass>>) () -> {
+            mWeatherDOA.insert(displayClass);
+            return Observable.just(displayClass);
+        });
+    }
+
+    public void deleteAll() {
+        mWeatherDOA.deleteAll();
+        return;
     }
 
     private static class insertAsyncTask extends AsyncTask<DisplayClass, Void, Void> {

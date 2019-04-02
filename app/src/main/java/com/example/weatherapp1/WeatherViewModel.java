@@ -8,18 +8,22 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 public class WeatherViewModel extends AndroidViewModel {
-    private WeatherRepository mRespository;
+    private WeatherRepository mRepository;
     private LiveData<List<DisplayClass>> mAllWeather;
 
     public WeatherViewModel(@NonNull Application application) {
         super(application);
-        mRespository = new WeatherRepository(application);
-        mAllWeather = mRespository.getmAllWeather();
+        mRepository = new WeatherRepository(application);
+        mAllWeather = mRepository.getmAllWeather();
     }
 
     LiveData<List<DisplayClass>> getmAllWeather() {return mAllWeather;}
 
-    public void insert(DisplayClass displayClass) {mRespository.insert(displayClass);}
+    public void deleteAll() {
+        mRepository.deleteAll();
+    }
 
-
+    public void insert(DisplayClass displayClass) {
+        mRepository.insert(displayClass);
+    }
 }

@@ -20,14 +20,11 @@ import java.util.List;
 public class ListAdapter extends BaseAdapter {
     Activity activity;
     ArrayList<DisplayClass> weatherList;
-    DBHelper helper;
-    private List<DisplayClass> mWeathers;
     public static int index = 0;
 
-    public ListAdapter(Activity activity, ArrayList<DisplayClass> weatherList, DBHelper helper) {
+    public ListAdapter(Activity activity, ArrayList<DisplayClass> weatherList) {
         this.activity = activity;
         this.weatherList = new ArrayList<>(weatherList);
-        this.helper = helper;
     }
 
     @Override
@@ -37,12 +34,12 @@ public class ListAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return weatherList.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     public class ViewHolder {
@@ -79,12 +76,11 @@ public class ListAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 weatherList.remove(position);
-                helper.delete(position);
                 notifyDataSetChanged();
             }
         });
 
-        Log.d("Network", "getView: " +weatherList.toString());
+        Log.d("Network", "getView: " + weatherList.toString());
 
         holder.editButton.setTag(convertView);
         holder.editButton.setTag(position);
@@ -99,8 +95,6 @@ public class ListAdapter extends BaseAdapter {
             }
         });
         for(int i = 0; i < weatherList.size(); i++) {
-            DateFormat df = DateFormat.getDateTimeInstance();
-
             Log.d("Network", "getView: " +  weatherList.get(i).toString());
             holder.cityField.setText("City: " + weatherList.get(i).getName());
             holder.detailsField.setText("Visibility: " + weatherList.get(i).getVisibility() + " m");
@@ -113,7 +107,8 @@ public class ListAdapter extends BaseAdapter {
     }
 
     void setmWeathers(List<DisplayClass> weathers) {
-        mWeathers = weathers;
+        weatherList.clear();
+        weatherList.addAll(weathers);
         notifyDataSetChanged();
     }
 

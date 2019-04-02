@@ -27,6 +27,7 @@ import io.reactivex.Observer;
 import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
@@ -79,6 +80,7 @@ public class Main3Activity extends AppCompatActivity {
         if(MainActivity.bEdit == true) {
             intent = getIntent();
             toEdit = (MainWeatherClass) intent.getParcelableExtra("EditUser");
+            DisplayEdit = new DisplayClass();
 
             textView.setText("Edit City");
             cityInput.setText(toEdit.getName());
@@ -88,10 +90,34 @@ public class Main3Activity extends AppCompatActivity {
                 public void onClick(View v) {
                     try {
                         String sNewAddress = String.valueOf(cityInput.getText());
-                        toEdit.setName(sNewAddress);
-                        Intent passIntent = new Intent(v.getContext(), MainActivity.class).putExtra("UpdateData", (Parcelable) toEdit);
-                        setResult(RESULT_OK, passIntent);
-                        finish();
+                        service.getMainWeatherClassJson(sNewAddress, "metric", "b60c7e86a1a0721e4f380436455f7f25")
+                                .subscribeOn(Schedulers.newThread())
+                                .observeOn(Schedulers.io())
+                                .map(mainWeatherClass -> mappingMainWeather(mainWeatherClass))
+                                .flatMap(displayClass -> repository.insert(displayClass))
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnError(new Consumer<Throwable>() {
+                                    @Override
+                                    public void accept(Throwable throwable) throws Exception {
+                                        Log.e(TAG, "accept: " + throwable.getCause());
+                                    }
+                                })
+                                .doOnNext(new Consumer<DisplayClass>() {
+                                    @Override
+                                    public void accept(DisplayClass displayClass) throws Exception {
+                                        DisplayEdit = displayClass;
+                                    }
+                                })
+                                .doOnComplete(new Action() {
+                                    @Override
+                                    public void run() throws Exception {
+                                        Log.d("Network", "onClick: " + toEdit.toString());
+                                        Intent passIntent = new Intent(v.getContext(), DisplayClass.class).putExtra("UpdateData", (Parcelable) toEdit);
+                                        setResult(RESULT_OK, passIntent);
+                                        finish();
+                                    }
+                                })
+                                .subscribe();
                     } catch (Exception e) {
                         Log.d("Exception", "onClick: " + e.getMessage());
                     }
@@ -100,6 +126,7 @@ public class Main3Activity extends AppCompatActivity {
         } else {
             intent = getIntent();
             toAdd = new MainWeatherClass();
+            DisplayAdd = new DisplayClass();
 
             textView.setText("Add City");
 
@@ -107,18 +134,34 @@ public class Main3Activity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     try {
-                    String sNewAddress = String.valueOf(cityInput.getText());
-                    service.getMainWeatherClassJson(sNewAddress, "metric", "b60c7e86a1a0721e4f380436455f7f25")
-                            .subscribeOn(Schedulers.newThread())
-                            .observeOn(Schedulers.io())
-                            .map(mainWeatherClass -> mappingMainWeather(mainWeatherClass))
-                            .flatMap(displayClass -> repository.insert(displayClass))
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(o -> {});
-                        Log.d("Network", "onClick: " + toAdd.toString());
-                        Intent passIntent = new Intent(v.getContext(), MainActivity.class).putExtra("AddData", (Parcelable) toAdd);
-                        setResult(RESULT_OK, passIntent);
-                        finish();
+                        String sNewAddress = String.valueOf(cityInput.getText());
+                        service.getMainWeatherClassJson(sNewAddress, "metric", "b60c7e86a1a0721e4f380436455f7f25")
+                                .subscribeOn(Schedulers.newThread())
+                                .map(mainWeatherClass -> mappingMainWeather(mainWeatherClass))
+                                .flatMap(displayClass -> repository.insert(displayClass))
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnError(new Consumer<Throwable>() {
+                                    @Override
+                                    public void accept(Throwable throwable) throws Exception {
+                                        Log.e(TAG, "accept: " + throwable.getCause());
+                                    }
+                                })
+                                .doOnNext(new Consumer<DisplayClass>() {
+                                    @Override
+                                    public void accept(DisplayClass displayClass) throws Exception {
+                                        DisplayAdd = displayClass;
+                                    }
+                                })
+                                .doOnComplete(new Action() {
+                                    @Override
+                                    public void run() throws Exception {
+                                        Log.d("Network", "onClick: " + DisplayAdd.getMain().getTemp());
+                                        Intent passIntent = new Intent(v.getContext(), DisplayClass.class).putExtra("AddData", (Parcelable) DisplayAdd);
+                                        setResult(RESULT_OK, passIntent);
+                                        finish();
+                                    }
+                                })
+                                .subscribe();
                     } catch (Exception e) {
                         Log.d("Exception", "onClick: " + e.getMessage());
                     }
