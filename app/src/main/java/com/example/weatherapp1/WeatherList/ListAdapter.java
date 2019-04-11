@@ -1,4 +1,4 @@
-package com.example.weatherapp1;
+package com.example.weatherapp1.WeatherList;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -13,7 +13,11 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.text.DateFormat;
+import com.example.weatherapp1.Data.Model.DisplayClass;
+import com.example.weatherapp1.R;
+import com.example.weatherapp1.WeatherList.MainActivity;
+import com.example.weatherapp1.WeatherManipulator.Main3Activity;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,8 +84,6 @@ public class ListAdapter extends BaseAdapter {
             }
         });
 
-        Log.d("Network", "getView: " + weatherList.toString());
-
         holder.editButton.setTag(convertView);
         holder.editButton.setTag(position);
         holder.editButton.setOnClickListener(new View.OnClickListener() {
@@ -94,26 +96,20 @@ public class ListAdapter extends BaseAdapter {
                 activity.startActivityForResult(intent, MainActivity.REQUEST_CODE);
             }
         });
-        for(int i = 0; i < weatherList.size(); i++) {
-            Log.d("Network", "getView: " +  weatherList.get(i).toString());
-            holder.cityField.setText("City: " + weatherList.get(i).getName());
-            holder.detailsField.setText("Visibility: " + weatherList.get(i).getVisibility() + " m");
-            holder.currentTemperatureField.setText("Temperature: " + weatherList.get(i).getMain().getTemp() + " C");
-            holder.humidity_field.setText("Humidity: " + weatherList.get(i).getMain().getHumidity() + "g/m3");
-            holder.pressure_field.setText("Pressure: " + weatherList.get(i).getMain().getPressure() + "Pa");
-            holder.updatedField.setText("Wind speed:" + weatherList.get(i).getWind().getSpeed() + "m/s");
-        }
+
+        Log.d("Network", "getView: " +  weatherList.get(position).toString());
+        holder.cityField.setText("City: " + weatherList.get(position).getName());
+        holder.detailsField.setText("Visibility: " + weatherList.get(position).getVisibility() + " m");
+        holder.currentTemperatureField.setText("Temperature: " + weatherList.get(position).getMain().getTemp() + " C");
+        holder.humidity_field.setText("Humidity: " + weatherList.get(position).getMain().getPressure() + "g/m3");
+        holder.pressure_field.setText("Pressure: " + weatherList.get(position).getMain().getPressure() + "Pa");
+        holder.updatedField.setText("Wind speed:" + weatherList.get(position).getWind().getSpeed() + "m/s");
         return convertView;
     }
 
-    void setmWeathers(List<DisplayClass> weathers) {
+    public void setmWeathers(List<DisplayClass> weathers) {
         weatherList.clear();
         weatherList.addAll(weathers);
         notifyDataSetChanged();
-    }
-
-    public void update(List<DisplayClass> newData) {
-        weatherList.clear();
-        weatherList.addAll(newData);
     }
 }

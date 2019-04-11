@@ -1,13 +1,19 @@
-package com.example.weatherapp1;
+package com.example.weatherapp1.Misc;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
+import com.example.weatherapp1.Data.Model.Cloud;
+import com.example.weatherapp1.Data.Model.Coord;
+import com.example.weatherapp1.Data.Model.Main;
+import com.example.weatherapp1.Data.Model.MainWeatherClass;
+import com.example.weatherapp1.Data.Model.System;
+import com.example.weatherapp1.Data.Model.Weather;
+import com.example.weatherapp1.Data.Model.Wind;
+import com.example.weatherapp1.Data.Source.Remote.listResourcesApi;
 import com.google.gson.JsonParser;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
@@ -20,7 +26,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 
 import io.reactivex.Observable;
 import okhttp3.OkHttpClient;
@@ -46,7 +51,7 @@ public class Networking {
     private static Retrofit retrofit = null;
     private static final String BASEURL = "http://api.openweathermap.org/data/2.5/";
 
-    static listResourcesApi getRetrofitObject() {
+    public static listResourcesApi getRetrofitObject() {
         final Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASEURL)
                 .addConverterFactory(GsonConverterFactory.create())

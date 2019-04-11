@@ -1,16 +1,15 @@
-package com.example.weatherapp1;
+package com.example.weatherapp1.Data.Source.Remote;
 
+import com.example.weatherapp1.Data.Model.MainWeatherClass;
 import com.google.gson.JsonObject;
 
 import io.reactivex.Observable;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-interface listResourcesApi {
+public interface listResourcesApi {
 
     @GET("weather?&units=metric&appid=b60c7e86a1a0721e4f380436455f7f25")
     Call<MainWeatherClass> getMainWeatherClassParam(

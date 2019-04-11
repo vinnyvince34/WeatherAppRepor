@@ -1,8 +1,12 @@
-package com.example.weatherapp1;
+package com.example.weatherapp1.Data.Source;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
+
+import com.example.weatherapp1.Data.Model.DisplayClass;
+import com.example.weatherapp1.Data.Source.Local.WeatherDAO;
+import com.example.weatherapp1.Data.Source.Local.WeatherRoomDB;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -14,13 +18,13 @@ public class WeatherRepository {
     private WeatherDAO mWeatherDOA;
     private LiveData<List<DisplayClass>> mAllWeather;
 
-    WeatherRepository(Application application) {
+    public WeatherRepository(Application application) {
         WeatherRoomDB db = WeatherRoomDB.getDB(application);
         mWeatherDOA= db.weatherDAO();
         mAllWeather = mWeatherDOA.getAllMainWeather();
     }
 
-    LiveData<List<DisplayClass>> getmAllWeather() {
+    public LiveData<List<DisplayClass>> getmAllWeather() {
         return mWeatherDOA.getAllMainWeather();
     }
 

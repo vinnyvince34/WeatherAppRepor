@@ -1,4 +1,4 @@
-package com.example.weatherapp1;
+package com.example.weatherapp1.Data.Source.Local;
 
 import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
@@ -7,12 +7,14 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.example.weatherapp1.Data.Model.DisplayClass;
+
 @Database(entities = {DisplayClass.class}, version = 1, exportSchema = false)
 public abstract class WeatherRoomDB extends RoomDatabase {
     public abstract WeatherDAO weatherDAO();
     public static volatile WeatherRoomDB INSTANCE;
 
-    static WeatherRoomDB getDB(final Context context) {
+    public static WeatherRoomDB getDB(final Context context) {
         if(INSTANCE == null) {
             synchronized (WeatherRoomDB.class) {
                 if(INSTANCE == null) {

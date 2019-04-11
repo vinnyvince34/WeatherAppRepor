@@ -1,4 +1,4 @@
-package com.example.weatherapp1;
+package com.example.weatherapp1.Data.Model;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.os.Parcel;
@@ -11,9 +11,6 @@ public class Cloud extends ClassLoader implements Parcelable {
     public Cloud(String type) {
         this.type = type;
     }
-
-//    public Cloud() {
-//    }
 
     public String getType () {
         return type;

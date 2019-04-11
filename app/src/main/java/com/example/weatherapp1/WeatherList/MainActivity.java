@@ -1,19 +1,21 @@
-package com.example.weatherapp1;
+package com.example.weatherapp1.WeatherList;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.arch.persistence.db.SupportSQLiteOpenHelper;
-import android.arch.persistence.room.DatabaseConfiguration;
-import android.arch.persistence.room.InvalidationTracker;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.example.weatherapp1.Data.Model.DisplayClass;
+import com.example.weatherapp1.R;
+import com.example.weatherapp1.WeatherManipulator.Main3Activity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,15 +25,13 @@ import io.reactivex.CompletableObserver;
 import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
-    protected TextView cityField, detailsField, currentTemperatureField, humidity_field, pressure_field, updatedField;
-    public static String city = "London";
-    public static String OPEN_WEATHER_MAP_API = "b60c7e86a1a0721e4f380436455f7f25";
-    public ArrayList<DisplayClass> weatherList = new ArrayList<>();
-    protected ListAdapter adapter;
+    TextView cityField, detailsField, currentTemperatureField, humidity_field, pressure_field, updatedField;
+    ArrayList<DisplayClass> weatherList = new ArrayList<>();
+    ListAdapter adapter;
     public static final int REQUEST_CODE = 1;
     public static boolean bEdit = false;
     public static boolean bIntentEmpty = true;
-    protected ListView lv;
+    ListView lv;
     private Completable  observable = new Completable() {
         @Override
         protected void subscribeActual(CompletableObserver observer) {
@@ -39,29 +39,6 @@ public class MainActivity extends AppCompatActivity {
         }
     };
     private WeatherViewModel mWeatherViewModel;
-    private WeatherRoomDB mWeatherRoomDB = new WeatherRoomDB() {
-        @Override
-        public WeatherDAO weatherDAO() {
-            return null;
-        }
-
-        @NonNull
-        @Override
-        protected SupportSQLiteOpenHelper createOpenHelper(DatabaseConfiguration config) {
-            return null;
-        }
-
-        @NonNull
-        @Override
-        protected InvalidationTracker createInvalidationTracker() {
-            return null;
-        }
-
-        @Override
-        public void clearAllTables() {
-
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,13 +46,8 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
 
+        weatherList.clear();
         mWeatherViewModel = ViewModelProviders.of(this).get(WeatherViewModel.class);
-        mWeatherViewModel.getmAllWeather().observe(this, new Observer<List<DisplayClass>>() {
-            @Override
-            public void onChanged(@Nullable final List<DisplayClass> displayClasses) {
-                adapter.setmWeathers(displayClasses);
-            }
-        });
 
         cityField = (TextView) findViewById(R.id.cityField);
         updatedField = (TextView) findViewById(R.id.updateField);
@@ -127,5 +99,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if(bEdit == true) {
+            DisplayClass receiver = data.getParcelableExtra("UpdateData");
+            int position = receiver.getUid();
+            weatherList.set(position, receiver);
+        }
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.example.weatherapp1;
+package com.example.weatherapp1.Data.Model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -12,9 +12,6 @@ public class Coord extends ClassLoader implements Parcelable {
         this.lat = lat;
     }
 
-//    public Coord() {
-//    }
-//
     public String getLon () {
         return lon;
     }

@@ -1,9 +1,9 @@
-package com.example.weatherapp1;
+package com.example.weatherapp1.Data.Model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-class Main extends ClassLoader implements Parcelable {
+public class Main extends ClassLoader implements Parcelable {
     private String temp;
     private String temp_min;
     private String humidity;
@@ -17,9 +17,6 @@ class Main extends ClassLoader implements Parcelable {
         this.pressure = pressure;
         this.temp_max = temp_max;
     }
-
-//    public Other() {
-//    }
 
     public String getTemp () {
         return temp;

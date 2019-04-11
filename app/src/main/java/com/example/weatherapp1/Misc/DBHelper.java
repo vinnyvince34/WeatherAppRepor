@@ -1,4 +1,4 @@
-package com.example.weatherapp1;
+package com.example.weatherapp1.Misc;
 
 import android.content.ContentValues;
 import android.content.Context;

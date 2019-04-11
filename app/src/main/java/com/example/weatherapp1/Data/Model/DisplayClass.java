@@ -1,4 +1,4 @@
-package com.example.weatherapp1;
+package com.example.weatherapp1.Data.Model;
 
 import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
